@@ -416,17 +416,6 @@ function render(){
         <input class="inp" placeholder="örn: 14 Mayıs 2026" value="${esc(d.date)}" oninput="ud('date',this.value)">
       </div>
       <div class="scard">
-        <div class="sch">🤖 AI ile Tablo Oku <span style="font-size:10px;background:#0c1a2e;color:#93c5fd;border:1px solid #1e3a5f;padding:2px 8px;border-radius:4px">Fotoğraf → Otomatik Doldur</span></div>
-        <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Finans tablonuzun ekran görüntüsünü yükleyin. AI otomatik dolduracak.</div>
-        <div class="drop" id="dz" onclick="document.getElementById('fi').click()" ondragover="dzo(event)" ondragleave="dzl()" ondrop="dzd(event)">
-          ${S.prev?`<img src="${S.prev}" style="max-height:140px;max-width:100%;border-radius:8px;margin-bottom:8px"><div style="font-size:12px;color:var(--t3)">Farklı fotoğraf için tekrar tıkla</div>`:`<div style="font-size:32px;margin-bottom:8px">📸</div><div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:4px">Fotoğrafı buraya sürükle veya tıkla</div><div style="font-size:11px;color:var(--t3)">PNG · JPG · Ekran görüntüsü</div>`}
-        </div>
-        <input type="file" id="fi" accept="image/*" style="display:none" onchange="hf(this.files[0])">
-        <div class="ai-load${S.ai==='loading'?' on':''}">⏳ ${esc(S.aimsg)}</div>
-        <div class="ai-ok${S.ai==='done'?' on':''}">✅ ${esc(S.aimsg)}</div>
-        <div class="ai-err${S.ai==='error'?' on':''}">❌ ${esc(S.aimsg)}</div>
-      </div>
-      <div class="scard">
         <div class="sch" style="margin-bottom:0">💰 Finansal Veriler</div>
         ${FS.map(sec=>`
           <div class="fsec">${sec.s}</div>
