@@ -165,7 +165,8 @@ const WEEK2={id:2,date:'7 Mayıs 2026',
 // Hesaplama fonksiyonları
 const aktifler=w=>{
   const a=w.aktif||{};
-  return sum(a.fintech)+sum(a.banka)+sum(a.odeme)+sum(a.kargoAlacak);
+  const v=w.vadeli||{};
+  return sum(a.fintech)+sum(a.banka)+sum(a.odeme)+sum(a.kargoAlacak)+sum(v.platform)+sum(v.proje)+sum(v.stok);
 };
 const pasifler=w=>{
   const p=w.pasif||{};
@@ -303,6 +304,14 @@ function render(){
         if(r.l||r.v) h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${esc(r.l)}</span><span class="rv" style="font-size:12px">${fmt(r.v)}</span></div>`;
       });
     });
+    // Vadeli alacaklar da aktife dahil
+    const vadSections=[['platform','Platform Alacakları'],['proje','Proje Gelirleri'],['stok','Stok Gelirleri']];
+    const vd=vadeliToplam(w);
+    h+=`<div class="row" style="background:var(--b2);margin-bottom:1px"><span class="rl" style="font-weight:700;color:#f0b429;font-size:11px">Vadeli Alacaklar</span><span class="rv" style="color:#f0b429;font-size:12px">${fmt(vd)}</span></div>`;
+    vadSections.forEach(([sub,title])=>{
+      const s=sum((w.vadeli||{})[sub]);
+      if(s) h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${title}</span><span class="rv" style="color:#f0b429;font-size:12px">${fmt(s)}</span></div>`;
+    });
     h+=`</div><div class="tot-bar" style="background:#3b82f610;border-top-color:#3b82f630"><span class="tot-lbl" style="color:#93c5fd">TOPLAM AKTİFLER</span><span class="tot-v" style="color:#3b82f6">${fmt(ak)}</span></div></div>`;
 
     // ORTA: Pasifler
@@ -317,13 +326,8 @@ function render(){
     });
     h+=`</div><div class="tot-bar" style="background:#ef444410;border-top-color:#ef444430"><span class="tot-lbl" style="color:#fca5a5">TOPLAM PASİFLER</span><span class="tot-v" style="color:#ef4444">${fmt(pas)}</span></div></div>`;
 
-    // SAĞ: Vadeli + Kararlar
+    // SAĞ: Kararlar
     h+=`<div class="col-right">`;
-    h+=`<div class="card" style="flex:0 0 auto"><div class="ch"><span class="ch-title">📈 Vadeli Alacaklar</span></div><div class="rows">`;
-    [['platform','Platform'],['proje','Proje Gelirleri'],['stok','Stok Gelirleri']].forEach(([sub,title])=>{
-      h+=`<div class="row"><span class="rl">${title}</span><span class="rv" style="color:#f0b429">${fmt(sum((w.vadeli||{})[sub]))}</span></div>`;
-    });
-    h+=`</div><div class="tot-bar" style="background:#f0b42910;border-top-color:#f0b42930"><span class="tot-lbl" style="color:#f0b429">TOPLAM</span><span class="tot-v" style="color:#f0b429">${fmt(vd)}</span></div></div>`;
 
     // Kararlar
     h+=`<div class="card" style="flex:1"><div class="ch"><span class="ch-title">📋 Kararlar</span><button class="mbtn" onclick="ekf()">+ Ekle</button></div>`;
