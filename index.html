@@ -98,6 +98,7 @@ function emptyWeek(){
       satici:[{l:'Mercury-Wise',v:''},{l:'Trendyol Cüzdan',v:''}],
       kargoBorc:[{l:'FedEx',v:''},{l:'Shipentegra',v:''}],
       maas:[{l:'Maaş+SGK+Vergi',v:''}],
+      vadeliBOrc:[],
     },
     vadeli:{
       platform:[{l:'İlker Ayan',v:''},{l:'Zehra Şahin',v:''}],
@@ -170,7 +171,7 @@ const aktifler=w=>{
 };
 const pasifler=w=>{
   const p=w.pasif||{};
-  return sum(p.tedarikci)+sum(p.satici)+sum(p.kargoBorc)+sum(p.maas);
+  return sum(p.tedarikci)+sum(p.satici)+sum(p.kargoBorc)+sum(p.maas)+sum(p.vadeliBOrc);
 };
 const vadeliToplam=w=>{
   const v=w.vadeli||{};
@@ -316,7 +317,7 @@ function render(){
 
     // ORTA: Pasifler
     h+=`<div class="card"><div class="ch"><span class="ch-title">📤 PASİFLER</span></div><div class="rows">`;
-    const pasifSections=[['tedarikci','Tedarikçi Cüzdan (Borç)'],['satici','Satıcı Cüzdan (Avans)'],['kargoBorc','Kargo-Ara Depo (Borç)'],['maas','Ay Bazlı Ödeme']];
+    const pasifSections=[['tedarikci','Tedarikçi Cüzdan (Borç)'],['satici','Satıcı Cüzdan (Avans)'],['kargoBorc','Kargo-Ara Depo (Borç)'],['maas','Ay Bazlı Ödeme'],['vadeliBOrc','Vadeli Borçlar (KDV, SGK vb.)']];
     pasifSections.forEach(([sub,title])=>{
       const s=sum((w.pasif||{})[sub]);
       h+=`<div class="row" style="background:var(--b2);margin-bottom:1px"><span class="rl" style="font-weight:700;color:#fca5a5;font-size:11px">${title}</span><span class="rv" style="color:#fca5a5;font-size:12px">${fmt(s)}</span></div>`;
@@ -368,6 +369,7 @@ function render(){
         {section:'pasif',sub:'satici',label:'Satıcı Cüzdan (Müşteri Avansları)',ph:'örn: Trendyol Cüzdan'},
         {section:'pasif',sub:'kargoBorc',label:'Kargo-Ara Depo (Borç)',ph:'örn: FedEx'},
         {section:'pasif',sub:'maas',label:'Ay Bazlı Ödeme',ph:'örn: Maaş+SGK'},
+        {section:'pasif',sub:'vadeliBOrc',label:'Vadeli Borçlar',ph:'örn: KDV, SGK'},
       ]},
       {title:'📈 VADELİ ALACAKLAR',color:'#f0b429',groups:[
         {section:'vadeli',sub:'platform',label:'Platform Alacakları',ph:'örn: İlker Ayan'},
@@ -469,6 +471,7 @@ function render(){
         {section:'pasif',sub:'satici',label:'Satıcı Cüzdan (Avanslar)',ph:'örn: Trendyol Cüzdan'},
         {section:'pasif',sub:'kargoBorc',label:'Kargo-Ara Depo (Borç)',ph:'örn: FedEx'},
         {section:'pasif',sub:'maas',label:'Ay Bazlı Ödeme',ph:'örn: Maaş+SGK'},
+        {section:'pasif',sub:'vadeliBOrc',label:'Vadeli Borçlar',ph:'örn: KDV, SGK'},
       ]},
       {title:'📈 VADELİ ALACAKLAR',color:'#f0b429',groups:[
         {section:'vadeli',sub:'platform',label:'Platform Alacakları',ph:'örn: İlker Ayan'},
