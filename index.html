@@ -307,7 +307,6 @@ function render(){
     });
     // Vadeli alacaklar da aktife dahil
     const vadSections=[['platform','Platform Alacakları'],['proje','Proje Gelirleri'],['stok','Stok Gelirleri']];
-    const vd=vadeliToplam(w);
     h+=`<div class="row" style="background:var(--b2);margin-bottom:1px"><span class="rl" style="font-weight:700;color:#f0b429;font-size:11px">Vadeli Alacaklar</span><span class="rv" style="color:#f0b429;font-size:12px">${fmt(vd)}</span></div>`;
     vadSections.forEach(([sub,title])=>{
       const s=sum((w.vadeli||{})[sub]);
