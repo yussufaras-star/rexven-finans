@@ -398,8 +398,8 @@ function render(){
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
         <div style="font-size:17px;font-weight:700;color:var(--gold)">✏️ ${esc(w.date)} — Düzenle</div>
         <div style="display:flex;gap:8px">
-          ${!wl?`<button class="mbtn ok" onclick="lockWeek(${w.id})" style="background:#052e16;color:#86efac;border-color:#16a34a;font-size:13px;padding:8px 16px">🔒 Kesinleştir</button>`:'<span style="color:#86efac;font-size:13px;padding:8px 12px;background:#052e1640;border-radius:8px;border:1px solid #16a34a">🔒 Kesinleştirildi</span>'}
-          <button class="mbtn" onclick="setTab(\'dashboard\')">← Geri</button>
+          ${!wl?'<button class="mbtn ok" onclick="lockWeek('+w.id+')" style="background:#052e16;color:#86efac;border-color:#16a34a;font-size:13px;padding:8px 16px">🔒 Kesinleştir</button>':'<span style="color:#86efac;font-size:13px;padding:8px 12px;background:#052e1640;border-radius:8px;border:1px solid #16a34a">🔒 Kesinleştirildi</span>'}
+          <button class="mbtn" onclick="setTab('dashboard')">← Geri</button>
         </div>
       </div>`;
 
@@ -445,7 +445,7 @@ function render(){
         h+=`<div class="drow-sec"><span>${label}</span>
           <div style="display:flex;align-items:center;gap:10px">
             <span style="font-size:12px;color:${color};font-weight:700">${fmt(total)} USD</span>
-            ${!wl?`<button class="mbtn" onclick="addWeekRow('${section}','${sub}')">+ Satır</button>`:''}
+            ${!wl?'<button class="mbtn" onclick="addWeekRow(\''+section+'\',\''+sub+'\')">+ Satır</button>':''}
           </div></div>`;
         rows.forEach((r,i)=>{
           if(wl){
@@ -458,7 +458,7 @@ function render(){
             h+=`<div class="drow-item" style="grid-template-columns:1fr 90px 130px 36px">
               <input class="inp" style="font-size:13px;padding:7px 10px" placeholder="${ph}" value="${esc(r.l)}" onchange="updWeekRow('${section}','${sub}',${i},'l',this.value)">
               <select class="inp" style="font-size:12px;padding:7px 6px" onchange="updWeekRow('${section}','${sub}',${i},'c',this.value)">
-                ${['USD','EUR','GBP','TRY'].map(cc=>`<option value="${cc}"${(r.c||'USD')===cc?' selected':''}>${cc}</option>`).join('')}
+                ${['USD','EUR','GBP','TRY'].map(cc=>'<option value="'+cc+'"'+((r.c||'USD')===cc?' selected':'')+'>'+cc+'</option>').join('')}
               </select>
               <input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="${r.v||''}" onchange="updWeekRow('${section}','${sub}',${i},'v',this.value)">
               <button class="mbtn del" onclick="delWeekRow('${section}','${sub}',${i})">✕</button>
@@ -503,8 +503,8 @@ function render(){
           </div>
           <div style="display:flex;gap:6px;flex-shrink:0">
             <button class="mbtn" onclick="selW(${x.id});setTab('duzenle')" style="font-size:12px">✏️ Düzenle</button>
-            ${!x.locked?`<button class="mbtn ok" onclick="lockWeek(${x.id})" style="font-size:12px">🔒 Kesinleştir</button>`:''}
-            ${!x.locked?`<button class="mbtn del" onclick="deleteWeek(${x.id})" style="border:1px solid #7f1d1d;color:#fca5a5;padding:6px 12px;font-size:12px">🗑 Sil</button>`:''}
+            ${!x.locked?'<button class="mbtn ok" onclick="lockWeek('+x.id+')" style="font-size:12px">🔒 Kesinleştir</button>':''}
+            ${!x.locked?'<button class="mbtn del" onclick="deleteWeek('+x.id+')" style="border:1px solid #7f1d1d;color:#fca5a5;padding:6px 12px;font-size:12px">🗑 Sil</button>':''}
           </div>
         </div>
       </div>`;
@@ -519,30 +519,28 @@ function render(){
         <canvas id="chartMain"></canvas>
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
-        ${S.weeks.map(x=>{const n=ozkaynaklar(x);return`<div style="background:var(--s1);border:1px solid var(--b2);border-radius:12px;padding:14px">
-          <div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:10px">${esc(x.date)}</div>
-          <div style="font-size:12px;color:var(--t3);margin-bottom:4px">Aktif: <span style="color:#3b82f6;font-weight:700">${fmtK(aktifler(x))}</span></div>
-          <div style="font-size:12px;color:var(--t3);margin-bottom:4px">Pasif: <span style="color:#ef4444;font-weight:700">${fmtK(pasifler(x))}</span></div>
-          <div style="font-size:12px;color:var(--t3)">Net: <span style="color:${n<0?'#ef4444':'#22c55e'};font-weight:700">${fmtK(n)}</span></div>
-        </div>`;}).join('')}
+        ${S.weeks.map(x=>{const n=ozkaynaklar(x);return'<div style="background:var(--s1);border:1px solid var(--b2);border-radius:12px;padding:14px">'
+          +'<div style="font-size:13px;font-weight:700;color:var(--gold);margin-bottom:10px">'+esc(x.date)+'</div>'
+          +'<div style="font-size:12px;color:var(--t3);margin-bottom:4px">Aktif: <span style="color:#3b82f6;font-weight:700">'+fmtK(aktifler(x))+'</span></div>'
+          +'<div style="font-size:12px;color:var(--t3);margin-bottom:4px">Pasif: <span style="color:#ef4444;font-weight:700">'+fmtK(pasifler(x))+'</span></div>'
+          +'<div style="font-size:12px;color:var(--t3)">Net: <span style="color:'+(n<0?'#ef4444':'#22c55e')+';font-weight:700">'+fmtK(n)+'</span></div>'
+          +'</div>';}).join('')}
       </div>
     </div>`;
   }
 
   else if(S.tab==='yeni'){
-    h+=`<div class="scroll-tab"><div style="max-width:960px">
-      <div style="font-size:17px;font-weight:700;color:var(--gold);margin-bottom:16px">➕ Yeni Hafta Ekle</div>
-      <div class="scard"><div class="sch">📅 Toplantı Tarihi</div>
-        <input class="inp" placeholder="örn: 14 Mayıs 2026" value="${esc(d.date)}" oninput="S.draft.date=this.value">
-      </div>
-      <div class="scard"><div class="sch">💱 Sabit Kurlar (Bu Hafta İçin)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
-          <div><label class="lbl">1 USD = ? TRY</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.usdTry||46}" oninput="S.draft.kurlar.usdTry=parseFloat(this.value)||46"></div>
-          <div><label class="lbl">1 EUR = ? USD</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.eurUsd||1.18}" oninput="S.draft.kurlar.eurUsd=parseFloat(this.value)||1.18"></div>
-          <div><label class="lbl">1 GBP = ? USD</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.gbpUsd||1.34}" oninput="S.draft.kurlar.gbpUsd=parseFloat(this.value)||1.34"></div>
-        </div>
-      </div>
-
+    const dk=d.kurlar||{usdTry:46,eurUsd:1.18,gbpUsd:1.34};
+    h+='<div class="scroll-tab"><div style="max-width:960px">';
+    h+='<div style="font-size:17px;font-weight:700;color:var(--gold);margin-bottom:16px">➕ Yeni Hafta Ekle</div>';
+    h+='<div class="scard"><div class="sch">📅 Toplantı Tarihi</div>';
+    h+='<input class="inp" placeholder="örn: 14 Mayıs 2026" value="'+esc(d.date)+'" oninput="S.draft.date=this.value"></div>';
+    h+='<div class="scard"><div class="sch">💱 Sabit Kurlar (Bu Hafta İçin)</div>';
+    h+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">';
+    h+='<div><label class="lbl">1 USD = ? TRY</label><input class="inp" type="number" step="0.001" value="'+dk.usdTry+'" oninput="S.draft.kurlar.usdTry=parseFloat(this.value)||46"></div>';
+    h+='<div><label class="lbl">1 EUR = ? USD</label><input class="inp" type="number" step="0.001" value="'+dk.eurUsd+'" oninput="S.draft.kurlar.eurUsd=parseFloat(this.value)||1.18"></div>';
+    h+='<div><label class="lbl">1 GBP = ? USD</label><input class="inp" type="number" step="0.001" value="'+dk.gbpUsd+'" oninput="S.draft.kurlar.gbpUsd=parseFloat(this.value)||1.34"></div>';
+    h+='</div></div>';
     const newSections=[
       {title:'🏦 AKTİFLER',color:'#93c5fd',groups:[
         {section:'aktif',sub:'fintech',label:'Fintech (Wise + Mercury)',ph:'örn: Wise'},
@@ -563,43 +561,44 @@ function render(){
         {section:'vadeli',sub:'stok',label:'Stok Gelirleri',ph:'örn: Trendyol Ayakkabı'},
       ]},
     ];
-
-    newSections.forEach(({title,color,groups})=>{
-      h+=`<div class="scard"><div class="sch" style="color:${color}">${title}</div>`;
-      groups.forEach(({section,sub,label,ph})=>{
-        const rows=d[section][sub];
-        const total=sum(rows);
-        h+=`<div class="drow-sec"><span>${label}</span>
-          <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:12px;color:${color};font-weight:700">${fmt(total)}</span>
-            <button class="mbtn" onclick="addDraftRow('${section}','${sub}')">+ Satır</button>
-          </div></div>`;
-        rows.forEach((r,i)=>{
-          h+=`<div class="drow-item" style="grid-template-columns:1fr 90px 130px 36px">
-            <input class="inp" style="font-size:13px;padding:7px 10px" placeholder="${ph}" value="${esc(r.l)}" oninput="updDraftRow('${section}','${sub}',${i},'l',this.value)">
-            <select class="inp" style="font-size:12px;padding:7px 6px" onchange="updDraftRow('${section}','${sub}',${i},'c',this.value)">
-              ${['USD','EUR','GBP','TRY'].map(cc=>`<option value="${cc}"${(r.c||'USD')===cc?' selected':''}>${cc}</option>`).join('')}
-            </select>
-            <input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="${r.v||''}" oninput="updDraftRow('${section}','${sub}',${i},'v',this.value)">
-            <button class="mbtn del" onclick="delDraftRow('${section}','${sub}',${i})">✕</button>
-          </div>`;
+    newSections.forEach(function(ns){
+      var title=ns.title,color=ns.color,groups=ns.groups;
+      h+='<div class="scard"><div class="sch" style="color:'+color+'">'+title+'</div>';
+      groups.forEach(function(g){
+        var section=g.section,sub=g.sub,label=g.label,ph=g.ph;
+        var rows=d[section][sub];
+        var total=rows.reduce(function(s,r){return s+toUSD(r.v,r.c||'USD',d.kurlar);},0);
+        h+='<div class="drow-sec"><span>'+label+'</span>';
+        h+='<div style="display:flex;align-items:center;gap:10px">';
+        h+='<span style="font-size:12px;color:'+color+';font-weight:700">'+fmt(total)+' USD</span>';
+        h+='<button class="mbtn" onclick="addDraftRow(\''+section+'\',\''+sub+'\')">+ Satır</button>';
+        h+='</div></div>';
+        rows.forEach(function(r,i){
+          h+='<div class="drow-item" style="grid-template-columns:1fr 90px 130px 36px">';
+          h+='<input class="inp" style="font-size:13px;padding:7px 10px" placeholder="'+ph+'" value="'+esc(r.l)+'" oninput="updDraftRow(\''+section+'\',\''+sub+'\','+i+',\'l\',this.value)">';
+          h+='<select class="inp" style="font-size:12px;padding:7px 6px" onchange="updDraftRow(\''+section+'\',\''+sub+'\','+i+',\'c\',this.value)">';
+          ['USD','EUR','GBP','TRY'].forEach(function(cc){h+='<option value="'+cc+'"'+((r.c||'USD')===cc?' selected':'')+'>'+cc+'</option>';});
+          h+='</select>';
+          h+='<input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="'+(r.v||'')+'" oninput="updDraftRow(\''+section+'\',\''+sub+'\','+i+',\'v\',this.value)">';
+          h+='<button class="mbtn del" onclick="delDraftRow(\''+section+'\',\''+sub+'\','+i+')">✕</button>';
+          h+='</div>';
         });
       });
-      h+=`</div>`;
+      h+='</div>';
     });
-
-    h+=`<div class="scard"><div class="sch"><span>📋 Kararlar</span><button class="mbtn" onclick="S.skf=!S.skf;render()">+ Ekle</button></div>
-      <div class="mform${S.skf?' open':''}">
-        <div class="mform-row"><input class="minp" style="width:44px;flex:none" value="${esc(S.nk.icon)}" oninput="S.nk.icon=this.value"><input class="minp" placeholder="Başlık" value="${esc(S.nk.baslik)}" oninput="S.nk.baslik=this.value"></div>
-        <div class="mform-row"><input class="minp" placeholder="Açıklama..." value="${esc(S.nk.aciklama)}" oninput="S.nk.aciklama=this.value"></div>
-        <div class="mform-row">
-          <select class="msel" onchange="S.nk.durum=this.value"><option value="devam">🔄 Devam</option><option value="tamamlandi">✅ Tamam</option><option value="aksiyon">⚡ Aksiyon</option></select>
-          <button class="mbtn ok" onclick="ak()">Ekle ✓</button>
-        </div></div>
-      ${d.kararlar.map((k,i)=>`<div class="krow"><span class="kicon">${esc(k.icon)}</span><div class="ktext"><div class="kbaslik">${esc(k.baslik)}</div><div class="kacik">${esc(k.aciklama)}</div></div><button class="mbtn del" onclick="S.draft.kararlar.splice(${i},1);render()">✕</button></div>`).join('')}
-    </div>
-    <button class="savebtn" onclick="sw()" style="opacity:${d.date?1:0.5}">✅ Haftayı Kaydet</button>
-    </div></div>`;
+    h+='<div class="scard"><div class="sch"><span>📋 Kararlar</span><button class="mbtn" onclick="S.skf=!S.skf;render()">+ Ekle</button></div>';
+    h+='<div class="mform'+(S.skf?' open':'')+'">';
+    h+='<div class="mform-row"><input class="minp" style="width:44px;flex:none" value="'+esc(S.nk.icon)+'" oninput="S.nk.icon=this.value"><input class="minp" placeholder="Başlık" value="'+esc(S.nk.baslik)+'" oninput="S.nk.baslik=this.value"></div>';
+    h+='<div class="mform-row"><input class="minp" placeholder="Açıklama..." value="'+esc(S.nk.aciklama)+'" oninput="S.nk.aciklama=this.value"></div>';
+    h+='<div class="mform-row"><select class="msel" onchange="S.nk.durum=this.value"><option value="devam">🔄 Devam</option><option value="tamamlandi">✅ Tamam</option><option value="aksiyon">⚡ Aksiyon</option></select>';
+    h+='<button class="mbtn ok" onclick="ak()">Ekle ✓</button></div></div>';
+    d.kararlar.forEach(function(k,i){
+      h+='<div class="krow"><span class="kicon">'+esc(k.icon)+'</span><div class="ktext"><div class="kbaslik">'+esc(k.baslik)+'</div><div class="kacik">'+esc(k.aciklama)+'</div></div>';
+      h+='<button class="mbtn del" onclick="S.draft.kararlar.splice('+i+',1);render()">✕</button></div>';
+    });
+    h+='</div>';
+    h+='<button class="savebtn" onclick="sw()" style="opacity:'+(d.date?1:0)+'">✅ Haftayı Kaydet</button>';
+    h+='</div></div>';
   }
 
   h+=`</div>`;
