@@ -87,47 +87,68 @@ const sum=arr=>(arr||[]).reduce((s,r)=>s+(parseFloat(r.v)||0),0);
 function emptyWeek(){
   return {
     date:'',
+    locked:false,
+    kurlar:{usdTry:46,eurUsd:1.18,gbpUsd:1.34},
     aktif:{
-      fintech:[{l:'Wise',v:''},{l:'Mercury',v:''}],
-      banka:[{l:'Garanti',v:''},{l:'KuveytTürk',v:''},{l:'Commerzbank',v:''}],
-      odeme:[{l:'İyzico',v:''},{l:'Lidio',v:''},{l:'Stripe',v:''}],
-      kargoAlacak:[{l:'Shipstation ABD',v:''},{l:'Amazon Shipping',v:''}],
+      fintech:[{l:'Wise',v:'',c:'USD'},{l:'Mercury',v:'',c:'USD'}],
+      banka:[{l:'Garanti',v:'',c:'TRY'},{l:'KuveytTürk',v:'',c:'TRY'},{l:'Commerzbank',v:'',c:'EUR'}],
+      odeme:[{l:'İyzico',v:'',c:'TRY'},{l:'Lidio',v:'',c:'TRY'},{l:'Stripe',v:'',c:'USD'}],
+      kargoAlacak:[{l:'Shipstation ABD',v:'',c:'USD'},{l:'Amazon Shipping',v:'',c:'USD'}],
     },
     pasif:{
-      tedarikci:[{l:'Aspol US',v:''},{l:'Atölye LLC',v:''}],
-      satici:[{l:'Mercury-Wise',v:''},{l:'Trendyol Cüzdan',v:''}],
-      kargoBorc:[{l:'FedEx',v:''},{l:'Shipentegra',v:''}],
-      maas:[{l:'Maaş+SGK+Vergi',v:''}],
+      tedarikci:[{l:'Aspol US',v:'',c:'USD'},{l:'Atölye LLC',v:'',c:'USD'}],
+      satici:[{l:'Mercury-Wise',v:'',c:'USD'},{l:'Trendyol Cüzdan',v:'',c:'TRY'}],
+      kargoBorc:[{l:'FedEx',v:'',c:'USD'},{l:'Shipentegra',v:'',c:'USD'}],
+      maas:[{l:'Maaş+SGK+Vergi',v:'',c:'TRY'}],
       vadeliBOrc:[],
     },
     vadeli:{
-      platform:[{l:'İlker Ayan',v:''},{l:'Zehra Şahin',v:''}],
-      proje:[{l:'Deloitte Fatura-7',v:''},{l:'Deloitte Fatura-8',v:''}],
-      stok:[{l:'Trendyol Ayakkabı',v:''},{l:'Miqna Deco Halı',v:''}],
+      platform:[{l:'İlker Ayan',v:'',c:'USD'},{l:'Zehra Şahin',v:'',c:'USD'}],
+      proje:[{l:'Deloitte Fatura-7',v:'',c:'TRY'},{l:'Deloitte Fatura-8',v:'',c:'TRY'}],
+      stok:[{l:'Trendyol Ayakkabı',v:'',c:'TRY'},{l:'Miqna Deco Halı',v:'',c:'USD'}],
     },
     kararlar:[],
     notlar:''
   };
 }
 
+// Para birimi → USD çevirme
+function toUSD(v,c,kurlar){
+  const k=kurlar||{usdTry:46,eurUsd:1.18,gbpUsd:1.34};
+  const n=parseFloat(v)||0;
+  if(c==='TRY') return n/k.usdTry;
+  if(c==='EUR') return n*k.eurUsd;
+  if(c==='GBP') return n*k.gbpUsd;
+  return n; // USD
+}
+
+// Para birimi sembolü
+const cSym={USD:'$',EUR:'€',GBP:'£',TRY:'₺'};
+
+function sumUSD(arr,kurlar){
+  return (arr||[]).reduce((s,r)=>s+toUSD(r.v,r.c||'USD',kurlar),0);
+}
+
 // SEED verileri (29 Nisan)
-const SEED={id:1,date:'29 Nisan 2026',
+const SEED={id:1,date:'29 Nisan 2026',locked:true,
+  kurlar:{usdTry:42.958,eurUsd:1.175,gbpUsd:1.27},
   aktif:{
-    fintech:[{l:'Wise',v:75170},{l:'Mercury',v:254444.84}],
-    banka:[{l:'Garanti',v:36606.55},{l:'KuveytTürk',v:58254.45},{l:'Commerzbank',v:10000}],
-    odeme:[{l:'İyzico',v:0},{l:'Lidio',v:0},{l:'Stripe',v:33942}],
-    kargoAlacak:[{l:'Shipstation ABD',v:0},{l:'Amazon Shipping',v:0}],
+    fintech:[{l:'Wise',v:75170,c:'USD'},{l:'Mercury',v:254444.84,c:'USD'}],
+    banka:[{l:'Garanti',v:36606.55,c:'USD'},{l:'KuveytTürk',v:58254.45,c:'USD'},{l:'Commerzbank',v:10000,c:'USD'}],
+    odeme:[{l:'İyzico',v:0,c:'TRY'},{l:'Lidio',v:0,c:'TRY'},{l:'Stripe',v:33942,c:'USD'}],
+    kargoAlacak:[{l:'Shipstation ABD',v:0,c:'USD'},{l:'Amazon Shipping',v:0,c:'USD'}],
   },
   pasif:{
-    tedarikci:[{l:'Tedarikçi Cüzdan',v:315204}],
-    satici:[{l:'Mercury-Wise',v:99450},{l:'Trendyol Cüzdan',v:11908}],
-    kargoBorc:[{l:'Kargo-Ara Depo',v:60054.66}],
-    maas:[{l:'Maaş+SGK+Vergi',v:115000}],
+    tedarikci:[{l:'Tedarikçi Cüzdan',v:315204,c:'USD'}],
+    satici:[{l:'Mercury-Wise',v:99450,c:'USD'},{l:'Trendyol Cüzdan',v:11908,c:'USD'}],
+    kargoBorc:[{l:'Kargo-Ara Depo',v:60054.66,c:'USD'}],
+    maas:[{l:'Maaş+SGK+Vergi',v:115000,c:'USD'}],
+    vadeliBOrc:[],
   },
   vadeli:{
-    platform:[{l:'Platform Alacakları',v:18585.71}],
-    proje:[{l:'Proje Gelirleri',v:44262.55}],
-    stok:[{l:'Stok Gelirleri',v:3541}],
+    platform:[{l:'Platform Alacakları',v:18585.71,c:'USD'}],
+    proje:[{l:'Proje Gelirleri',v:44262.55,c:'USD'}],
+    stok:[{l:'Stok Gelirleri',v:3541,c:'USD'}],
   },
   kararlar:[
     {icon:'⚖️',baslik:'Hukuki İşler',aciklama:'Mustafa Eren Tuna koordinatör atandı.',durum:'devam'},
@@ -141,23 +162,25 @@ const SEED={id:1,date:'29 Nisan 2026',
   notlar:''
 };
 
-const WEEK2={id:2,date:'7 Mayıs 2026',
+const WEEK2={id:2,date:'7 Mayıs 2026',locked:true,
+  kurlar:{usdTry:46.1374,eurUsd:1.155675,gbpUsd:1.34006},
   aktif:{
-    fintech:[{l:'Wise',v:115113},{l:'Mercury',v:228954}],
-    banka:[{l:'Garanti',v:14742.69},{l:'KuveytTürk',v:0},{l:'Commerzbank',v:0}],
-    odeme:[{l:'İyzico',v:0},{l:'Lidio',v:420000},{l:'Stripe',v:21532.85}],
-    kargoAlacak:[{l:'Shipstation ABD',v:2822},{l:'Amazon Shipping',v:12045},{l:'Nestshipper',v:4509.8}],
+    fintech:[{l:'Wise',v:115113,c:'USD'},{l:'Mercury',v:228954,c:'USD'}],
+    banka:[{l:'Garanti',v:14742.69,c:'USD'},{l:'KuveytTürk',v:0,c:'USD'},{l:'Commerzbank',v:0,c:'USD'}],
+    odeme:[{l:'İyzico',v:0,c:'TRY'},{l:'Lidio',v:420000,c:'TRY'},{l:'Stripe',v:21532.85,c:'USD'}],
+    kargoAlacak:[{l:'Shipstation ABD',v:2822,c:'USD'},{l:'Amazon Shipping',v:12045,c:'USD'},{l:'Nestshipper',v:4509.8,c:'USD'}],
   },
   pasif:{
-    tedarikci:[{l:'Tedarikçi Cüzdan',v:297428.53}],
-    satici:[{l:'Mercury-Wise',v:115113},{l:'Trendyol Cüzdan',v:845076}],
-    kargoBorc:[{l:'FedEx',v:283714},{l:'Shipentegra',v:6101.51},{l:'Aspol Ara Depo',v:1484}],
-    maas:[{l:'Maaş+SGK+Vergi',v:28387.10}],
+    tedarikci:[{l:'Tedarikçi Cüzdan',v:297428.53,c:'USD'}],
+    satici:[{l:'Mercury-Wise',v:115113,c:'USD'},{l:'Trendyol Cüzdan',v:845076,c:'TRY'}],
+    kargoBorc:[{l:'FedEx',v:283714,c:'TRY'},{l:'Shipentegra',v:6101.51,c:'USD'},{l:'Aspol Ara Depo',v:1484,c:'USD'}],
+    maas:[{l:'Maaş+SGK+Vergi',v:28387.10,c:'USD'}],
+    vadeliBOrc:[],
   },
   vadeli:{
-    platform:[{l:'Platform Alacakları',v:22805.42}],
-    proje:[{l:'Proje Gelirleri',v:44086.65}],
-    stok:[{l:'Stok Gelirleri',v:3526.93}],
+    platform:[{l:'Platform Alacakları',v:22805.42,c:'USD'}],
+    proje:[{l:'Proje Gelirleri',v:44086.65,c:'USD'}],
+    stok:[{l:'Stok Gelirleri',v:3526.93,c:'USD'}],
   },
   kararlar:[],
   notlar:''
@@ -165,17 +188,16 @@ const WEEK2={id:2,date:'7 Mayıs 2026',
 
 // Hesaplama fonksiyonları
 const aktifler=w=>{
-  const a=w.aktif||{};
-  const v=w.vadeli||{};
-  return sum(a.fintech)+sum(a.banka)+sum(a.odeme)+sum(a.kargoAlacak)+sum(v.platform)+sum(v.proje)+sum(v.stok);
+  const a=w.aktif||{},v=w.vadeli||{},k=w.kurlar;
+  return sumUSD(a.fintech,k)+sumUSD(a.banka,k)+sumUSD(a.odeme,k)+sumUSD(a.kargoAlacak,k)+sumUSD(v.platform,k)+sumUSD(v.proje,k)+sumUSD(v.stok,k);
 };
 const pasifler=w=>{
-  const p=w.pasif||{};
-  return sum(p.tedarikci)+sum(p.satici)+sum(p.kargoBorc)+sum(p.maas)+sum(p.vadeliBOrc);
+  const p=w.pasif||{},k=w.kurlar;
+  return sumUSD(p.tedarikci,k)+sumUSD(p.satici,k)+sumUSD(p.kargoBorc,k)+sumUSD(p.maas,k)+sumUSD(p.vadeliBOrc,k);
 };
 const vadeliToplam=w=>{
-  const v=w.vadeli||{};
-  return sum(v.platform)+sum(v.proje)+sum(v.stok);
+  const v=w.vadeli||{},k=w.kurlar;
+  return sumUSD(v.platform,k)+sumUSD(v.proje,k)+sumUSD(v.stok,k);
 };
 const ozkaynaklar=w=>aktifler(w)-pasifler(w);
 
@@ -214,20 +236,31 @@ let S={
 const W=()=>S.weeks.find(w=>w.id===S.sel)||S.weeks[0];
 
 // Dinamik satır yönetimi (taslak için)
-function addDraftRow(section,sub){S.draft[section][sub].push({l:'',v:''});render();}
+function addDraftRow(section,sub){S.draft[section][sub].push({l:'',v:'',c:'USD'});render();}
 function delDraftRow(section,sub,i){S.draft[section][sub].splice(i,1);render();}
 function updDraftRow(section,sub,i,field,val){
   const r=S.draft[section][sub][i];
-  if(field==='v') r.v=parseFloat(val)||0; else r.l=val;
+  if(field==='v') r.v=parseFloat(val)||0;
+  else r[field]=val;
 }
 
 // Mevcut hafta satır yönetimi (dashboard için)
-function addWeekRow(section,sub){const w=S.weeks.find(x=>x.id===S.sel);if(w){if(!w[section])w[section]={};if(!w[section][sub])w[section][sub]=[];w[section][sub].push({l:'',v:''});saveWeeks();render();}}
+function lockWeek(id){
+  if(!confirm('Haftayı kesinleştirmek istediğinize emin misiniz? Bu işlem geri alınamaz.'))return;
+  const w=S.weeks.find(x=>x.id===id);
+  if(w){w.locked=true;saveWeeks();render();}
+}
+function updKur(id,field,val){
+  const w=S.weeks.find(x=>x.id===id);
+  if(w){if(!w.kurlar)w.kurlar={};w.kurlar[field]=parseFloat(val)||0;saveWeeks();}
+}
+function addWeekRow(section,sub){const w=S.weeks.find(x=>x.id===S.sel);if(w){if(!w[section])w[section]={};if(!w[section][sub])w[section][sub]=[];w[section][sub].push({l:'',v:'',c:'USD'});saveWeeks();render();}}
 function delWeekRow(section,sub,i){const w=S.weeks.find(x=>x.id===S.sel);if(w&&w[section]&&w[section][sub]){w[section][sub].splice(i,1);saveWeeks();render();}}
 function updWeekRow(section,sub,i,field,val){
   const w=S.weeks.find(x=>x.id===S.sel);
   if(w&&w[section]&&w[section][sub]&&w[section][sub][i]){
-    if(field==='v') w[section][sub][i].v=parseFloat(val)||0; else w[section][sub][i].l=val;
+    if(field==='v') w[section][sub][i].v=parseFloat(val)||0;
+    else w[section][sub][i][field]=val;
     saveWeeks();
   }
 }
@@ -302,7 +335,11 @@ function render(){
       const s=sum((w.aktif||{})[sub]);
       h+=`<div class="row" style="background:var(--b2);margin-bottom:1px"><span class="rl" style="font-weight:700;color:#93c5fd;font-size:11px">${title}</span><span class="rv" style="color:#93c5fd;font-size:12px">${fmt(s)}</span></div>`;
       ((w.aktif||{})[sub]||[]).forEach(r=>{
-        if(r.l||r.v) h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${esc(r.l)}</span><span class="rv" style="font-size:12px">${fmt(r.v)}</span></div>`;
+        if(r.l||r.v){
+          const usd=toUSD(r.v,r.c||'USD',w.kurlar);
+          const orig=r.c&&r.c!=='USD'?` <span style="color:var(--t3);font-size:11px">(${cSym[r.c]||''}${parseFloat(r.v||0).toLocaleString('tr-TR',{minimumFractionDigits:2})} ${r.c})</span>`:'';
+          h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${esc(r.l)}${orig}</span><span class="rv" style="font-size:12px">${fmt(usd)}</span></div>`;
+        }
       });
     });
     // Vadeli alacaklar da aktife dahil
@@ -321,7 +358,11 @@ function render(){
       const s=sum((w.pasif||{})[sub]);
       h+=`<div class="row" style="background:var(--b2);margin-bottom:1px"><span class="rl" style="font-weight:700;color:#fca5a5;font-size:11px">${title}</span><span class="rv" style="color:#fca5a5;font-size:12px">${fmt(s)}</span></div>`;
       ((w.pasif||{})[sub]||[]).forEach(r=>{
-        if(r.l||r.v) h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${esc(r.l)}</span><span class="rv" style="color:#fca5a5;font-size:12px">${fmt(r.v)}</span></div>`;
+        if(r.l||r.v){
+          const usd=toUSD(r.v,r.c||'USD',w.kurlar);
+          const orig=r.c&&r.c!=='USD'?` <span style="color:var(--t3);font-size:11px">(${cSym[r.c]||''}${parseFloat(r.v||0).toLocaleString('tr-TR',{minimumFractionDigits:2})} ${r.c})</span>`:'';
+          h+=`<div class="row"><span class="rl" style="padding-left:12px;font-size:12px">↳ ${esc(r.l)}${orig}</span><span class="rv" style="color:#fca5a5;font-size:12px">${fmt(usd)}</span></div>`;
+        }
       });
     });
     h+=`</div><div class="tot-bar" style="background:#ef444410;border-top-color:#ef444430"><span class="tot-lbl" style="color:#fca5a5">TOPLAM PASİFLER</span><span class="tot-v" style="color:#ef4444">${fmt(pas)}</span></div></div>`;
@@ -352,11 +393,30 @@ function render(){
   }
 
   else if(S.tab==='duzenle'){
-    // Mevcut haftayı düzenle — dinamik satırlarla
+    const wl=w.locked;
     h+=`<div class="scroll-tab"><div style="max-width:960px">
-      <div style="font-size:17px;font-weight:700;color:var(--gold);margin-bottom:16px">✏️ ${esc(w.date)} — Düzenle</div>`;
-    
-    const sections=[
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div style="font-size:17px;font-weight:700;color:var(--gold)">✏️ ${esc(w.date)} — Düzenle</div>
+        <div style="display:flex;gap:8px">
+          ${!wl?`<button class="mbtn ok" onclick="lockWeek(${w.id})" style="background:#052e16;color:#86efac;border-color:#16a34a;font-size:13px;padding:8px 16px">🔒 Kesinleştir</button>`:'<span style="color:#86efac;font-size:13px;padding:8px 12px;background:#052e1640;border-radius:8px;border:1px solid #16a34a">🔒 Kesinleştirildi</span>'}
+          <button class="mbtn" onclick="setTab(\'dashboard\')">← Geri</button>
+        </div>
+      </div>`;
+
+    if(!wl){
+      // Kur girişi
+      const k=w.kurlar||{usdTry:46,eurUsd:1.18,gbpUsd:1.34};
+      h+=`<div class="scard">
+        <div class="sch">💱 Haftaya Ait Sabit Kurlar</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div><label class="lbl">1 USD = ? TRY</label><input class="inp" type="number" step="0.001" value="${k.usdTry}" onchange="updKur(${w.id},'usdTry',this.value)"></div>
+          <div><label class="lbl">1 EUR = ? USD</label><input class="inp" type="number" step="0.001" value="${k.eurUsd}" onchange="updKur(${w.id},'eurUsd',this.value)"></div>
+          <div><label class="lbl">1 GBP = ? USD</label><input class="inp" type="number" step="0.001" value="${k.gbpUsd}" onchange="updKur(${w.id},'gbpUsd',this.value)"></div>
+        </div>
+      </div>`;
+    }
+
+    const editSections=[
       {title:'🏦 AKTİFLER',color:'#93c5fd',groups:[
         {section:'aktif',sub:'fintech',label:'Fintech (Wise + Mercury)',ph:'örn: Wise'},
         {section:'aktif',sub:'banka',label:'Banka Hesapları',ph:'örn: Garanti'},
@@ -365,7 +425,7 @@ function render(){
       ]},
       {title:'📤 PASİFLER',color:'#fca5a5',groups:[
         {section:'pasif',sub:'tedarikci',label:'Tedarikçi Cüzdan',ph:'örn: Aspol US'},
-        {section:'pasif',sub:'satici',label:'Satıcı Cüzdan (Müşteri Avansları)',ph:'örn: Trendyol Cüzdan'},
+        {section:'pasif',sub:'satici',label:'Satıcı Cüzdan',ph:'örn: Trendyol Cüzdan'},
         {section:'pasif',sub:'kargoBorc',label:'Kargo-Ara Depo (Borç)',ph:'örn: FedEx'},
         {section:'pasif',sub:'maas',label:'Ay Bazlı Ödeme',ph:'örn: Maaş+SGK'},
         {section:'pasif',sub:'vadeliBOrc',label:'Vadeli Borçlar',ph:'örn: KDV, SGK'},
@@ -377,27 +437,38 @@ function render(){
       ]},
     ];
 
-    sections.forEach(({title,color,groups})=>{
-      h+=`<div class="scard">
-        <div class="sch" style="color:${color}">${title}</div>`;
+    editSections.forEach(({title,color,groups})=>{
+      h+=`<div class="scard"><div class="sch" style="color:${color}">${title}</div>`;
       groups.forEach(({section,sub,label,ph})=>{
         const rows=(w[section]||{})[sub]||[];
-        const total=sum(rows);
-        h+=`<div class="drow-sec"><span style="color:${color}">${label}</span>
+        const total=rows.reduce((s,r)=>s+toUSD(r.v,r.c||'USD',w.kurlar),0);
+        h+=`<div class="drow-sec"><span>${label}</span>
           <div style="display:flex;align-items:center;gap:10px">
-            <span style="font-size:12px;color:${color};font-weight:700">${fmt(total)}</span>
-            <button class="mbtn" onclick="addWeekRow('${section}','${sub}')">+ Satır</button>
+            <span style="font-size:12px;color:${color};font-weight:700">${fmt(total)} USD</span>
+            ${!wl?`<button class="mbtn" onclick="addWeekRow('${section}','${sub}')">+ Satır</button>`:''}
           </div></div>`;
         rows.forEach((r,i)=>{
-          h+=`<div class="drow-item">
-            <input class="inp" style="font-size:13px;padding:7px 10px" placeholder="${ph}" value="${esc(r.l)}" onchange="updWeekRow('${section}','${sub}',${i},'l',this.value)">
-            <input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="${r.v||''}" onchange="updWeekRow('${section}','${sub}',${i},'v',this.value)">
-            <button class="mbtn del" onclick="delWeekRow('${section}','${sub}',${i})">✕</button>
-          </div>`;
+          if(wl){
+            h+=`<div class="drow-item" style="grid-template-columns:1fr 80px 120px">
+              <span style="font-size:13px;color:var(--t2);padding:4px 8px">${esc(r.l)}</span>
+              <span style="font-size:11px;color:var(--t3);padding:4px;text-align:center">${r.c||'USD'}</span>
+              <span style="font-size:13px;color:${color};padding:4px 8px;text-align:right">${cSym[r.c||'USD']}${parseFloat(r.v||0).toLocaleString('tr-TR',{minimumFractionDigits:2})}</span>
+            </div>`;
+          } else {
+            h+=`<div class="drow-item" style="grid-template-columns:1fr 90px 130px 36px">
+              <input class="inp" style="font-size:13px;padding:7px 10px" placeholder="${ph}" value="${esc(r.l)}" onchange="updWeekRow('${section}','${sub}',${i},'l',this.value)">
+              <select class="inp" style="font-size:12px;padding:7px 6px" onchange="updWeekRow('${section}','${sub}',${i},'c',this.value)">
+                ${['USD','EUR','GBP','TRY'].map(cc=>`<option value="${cc}"${(r.c||'USD')===cc?' selected':''}>${cc}</option>`).join('')}
+              </select>
+              <input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="${r.v||''}" onchange="updWeekRow('${section}','${sub}',${i},'v',this.value)">
+              <button class="mbtn del" onclick="delWeekRow('${section}','${sub}',${i})">✕</button>
+            </div>`;
+          }
         });
       });
       h+=`</div>`;
     });
+
     h+=`<button class="savebtn" onclick="setTab('dashboard')" style="background:var(--b1);color:#93c5fd">← Dashboard'a Dön</button>
     </div></div>`;
   }
@@ -420,14 +491,21 @@ function render(){
       h+=`<div class="hcard${a?' on':''}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
           <div style="flex:1;cursor:pointer" onclick="selW(${x.id});setTab('dashboard')">
-            <div style="font-size:15px;font-weight:700;color:${a?'#93c5fd':'var(--t1)'};margin-bottom:8px">${esc(x.date||'Hafta '+x.id)}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="font-size:15px;font-weight:700;color:${a?'#93c5fd':'var(--t1)'}">${esc(x.date||'Hafta '+x.id)}</span>
+              ${x.locked?'<span style="font-size:10px;background:#052e16;color:#86efac;padding:2px 8px;border-radius:10px;border:1px solid #16a34a">🔒 Kesinleşti</span>':'<span style="font-size:10px;background:#0c1a2e;color:#93c5fd;padding:2px 8px;border-radius:10px;border:1px solid #1e3a5f">✏️ Taslak</span>'}
+            </div>
             <div style="display:flex;gap:16px;font-size:13px;flex-wrap:wrap">
               <span style="color:var(--t3)">Aktif: <strong style="color:#3b82f6">${fmtK(aktifler(x))}</strong></span>
               <span style="color:var(--t3)">Pasif: <strong style="color:#ef4444">${fmtK(pasifler(x))}</strong></span>
               <span style="color:var(--t3)">Net: <strong style="color:${n<0?'#ef4444':'#22c55e'}">${fmtK(n)}</strong></span>
             </div>
           </div>
-          <button class="mbtn del" onclick="deleteWeek(${x.id})" style="border:1px solid #7f1d1d;color:#fca5a5;padding:6px 12px;font-size:12px">🗑 Sil</button>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="mbtn" onclick="selW(${x.id});setTab('duzenle')" style="font-size:12px">✏️ Düzenle</button>
+            ${!x.locked?`<button class="mbtn ok" onclick="lockWeek(${x.id})" style="font-size:12px">🔒 Kesinleştir</button>`:''}
+            ${!x.locked?`<button class="mbtn del" onclick="deleteWeek(${x.id})" style="border:1px solid #7f1d1d;color:#fca5a5;padding:6px 12px;font-size:12px">🗑 Sil</button>`:''}
+          </div>
         </div>
       </div>`;
     });
@@ -456,7 +534,14 @@ function render(){
       <div style="font-size:17px;font-weight:700;color:var(--gold);margin-bottom:16px">➕ Yeni Hafta Ekle</div>
       <div class="scard"><div class="sch">📅 Toplantı Tarihi</div>
         <input class="inp" placeholder="örn: 14 Mayıs 2026" value="${esc(d.date)}" oninput="S.draft.date=this.value">
-      </div>`;
+      </div>
+      <div class="scard"><div class="sch">💱 Sabit Kurlar (Bu Hafta İçin)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div><label class="lbl">1 USD = ? TRY</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.usdTry||46}" oninput="S.draft.kurlar.usdTry=parseFloat(this.value)||46"></div>
+          <div><label class="lbl">1 EUR = ? USD</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.eurUsd||1.18}" oninput="S.draft.kurlar.eurUsd=parseFloat(this.value)||1.18"></div>
+          <div><label class="lbl">1 GBP = ? USD</label><input class="inp" type="number" step="0.001" value="${d.kurlar?.gbpUsd||1.34}" oninput="S.draft.kurlar.gbpUsd=parseFloat(this.value)||1.34"></div>
+        </div>
+      </div>
 
     const newSections=[
       {title:'🏦 AKTİFLER',color:'#93c5fd',groups:[
@@ -490,8 +575,11 @@ function render(){
             <button class="mbtn" onclick="addDraftRow('${section}','${sub}')">+ Satır</button>
           </div></div>`;
         rows.forEach((r,i)=>{
-          h+=`<div class="drow-item">
+          h+=`<div class="drow-item" style="grid-template-columns:1fr 90px 130px 36px">
             <input class="inp" style="font-size:13px;padding:7px 10px" placeholder="${ph}" value="${esc(r.l)}" oninput="updDraftRow('${section}','${sub}',${i},'l',this.value)">
+            <select class="inp" style="font-size:12px;padding:7px 6px" onchange="updDraftRow('${section}','${sub}',${i},'c',this.value)">
+              ${['USD','EUR','GBP','TRY'].map(cc=>`<option value="${cc}"${(r.c||'USD')===cc?' selected':''}>${cc}</option>`).join('')}
+            </select>
             <input class="inp" type="number" step="0.01" style="font-size:13px;padding:7px 10px" placeholder="0.00" value="${r.v||''}" oninput="updDraftRow('${section}','${sub}',${i},'v',this.value)">
             <button class="mbtn del" onclick="delDraftRow('${section}','${sub}',${i})">✕</button>
           </div>`;
