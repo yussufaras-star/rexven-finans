@@ -186,6 +186,31 @@ const WEEK2={id:2,date:'7 Mayıs 2026',locked:true,
   notlar:''
 };
 
+
+const WEEK3={id:3,date:'10 Haziran 2026',locked:false,
+  kurlar:{usdTry:46.1374,eurUsd:1.155675,gbpUsd:1.34006},
+  aktif:{
+    fintech:[{l:'Wise',v:198987.72,c:'USD'},{l:'Mercury',v:243800.03,c:'USD'},{l:'Mercury Credit',v:-15365.47,c:'USD'}],
+    banka:[{l:'Commerzbank',v:2648,c:'EUR'},{l:'Revolut',v:1589.42,c:'EUR'},{l:'Garanti Bakiye',v:207928,c:'TRY'},{l:'Garanti Kredi Kartı',v:-20000,c:'TRY'},{l:'KuveytTürk Bakiye',v:1187696,c:'TRY'},{l:'KuveytTürk Kredi Kartı',v:-481385,c:'TRY'},{l:'Vakıf Bank',v:1000,c:'TRY'}],
+    odeme:[{l:'İyzico',v:0,c:'USD'},{l:'Lidio',v:420000,c:'TRY'},{l:'Stripe (LLC+GMBH)',v:19666.21,c:'USD'}],
+    kargoAlacak:[{l:'Shipstation Almanya',v:630,c:'EUR'},{l:'Shipstation ABD',v:2822,c:'USD'},{l:'Shipstation İngiltere',v:823,c:'EUR'},{l:'Nestshipper Bakiye',v:4509.8,c:'USD'},{l:'Amazon Shipping',v:12045,c:'USD'},{l:'Mysys Shipping',v:720,c:'USD'},{l:'ShipHunt',v:0,c:'USD'}],
+  },
+  pasif:{
+    tedarikci:[{l:'Aspol US',v:287526.25,c:'USD'},{l:'Atölye LLC',v:66441.36,c:'USD'},{l:'Printmast',v:9327,c:'USD'},{l:'MFO Print',v:10834.87,c:'USD'},{l:'Teecart',v:18699.59,c:'USD'},{l:'Chimen',v:4798.14,c:'USD'},{l:'DKMN',v:1602.78,c:'USD'},{l:'Goldjewelrysupplier AP',v:10364.27,c:'USD'},{l:'Farbify',v:2191.03,c:'USD'},{l:'Decovleno',v:0,c:'USD'},{l:'Zanaart US',v:3251.4,c:'USD'},{l:'Gümüşistan US',v:2645.62,c:'USD'},{l:'Gümüşistan TR',v:2245,c:'EUR'},{l:'Zanaart TR',v:89888,c:'TRY'},{l:'Glozhen TR',v:202567.5,c:'TRY'}],
+    satici:[{l:'Mercury-Wise',v:118763.77,c:'USD'},{l:'Trendyol Cüzdan',v:845076,c:'TRY'}],
+    kargoBorc:[{l:'FedEx',v:388954.7,c:'TRY'},{l:'Shipentegra (Kargo+Gümrük)',v:6101.51,c:'USD'},{l:'Aspol Nestshipper Komisyon',v:820,c:'USD'},{l:'Aspol Ara Depo',v:1484,c:'USD'},{l:'Company Formation Consultancy (Clemta&Sky)',v:70756,c:'TRY'}],
+    maas:[{l:'Maaşlar+Gelir Vergisi+SGK',v:40000,c:'USD'}],
+    vadeliBOrc:[],
+  },
+  vadeli:{
+    platform:[{l:'İlker Ayan',v:1500,c:'USD'},{l:'Zehra Şahin',v:200,c:'USD'},{l:'Nurseda Karayazı',v:300,c:'USD'},{l:'Barış Kaya',v:1000,c:'USD'},{l:'Murat Fatih',v:500,c:'USD'},{l:'Burcu İnan Özkan',v:4132.39,c:'USD'},{l:'Neshelly Limited',v:1792,c:'USD'},{l:'muhammetinal07 Talha Kuz',v:1000,c:'USD'},{l:'hatice alsancak',v:100,c:'USD'},{l:'Ahmet Hakan Yumuşakdemir',v:4866,c:'USD'},{l:'Gülnaz Bozkurt',v:7000,c:'TRY'},{l:'Ahmet Uzuner',v:27666,c:'TRY'},{l:'Murat Fatih',v:500,c:'USD'},{l:'Tuğba çetin',v:10000,c:'TRY'},{l:'Mehmet Gök',v:50000,c:'TRY'},{l:'Emincan Şöhret',v:50000,c:'TRY'},{l:'Oğuzhan sandıkçı',v:94.06,c:'USD'}],
+    proje:[{l:'Deloitte Fatura-7',v:1000000,c:'TRY'},{l:'Deloitte Fatura-8',v:1315986,c:'TRY'},{l:'Burcu İnan Özkan',v:4132.39,c:'USD'}],
+    stok:[{l:'Trendyol Ayakkabı (3 taksit)',v:110000,c:'TRY'},{l:'Miqna Deco Halı',v:0,c:'USD'},{l:'Zanaarten Alacaklar',v:45000,c:'USD'},{l:'Araç Satış Bedeli',v:6000,c:'EUR'}],
+  },
+  kararlar:[],
+  notlar:''
+};
+
 // Hesaplama fonksiyonları
 const aktifler=w=>{
   const a=w.aktif||{},v=w.vadeli||{},k=w.kurlar;
@@ -225,8 +250,8 @@ async function loadWeeks(){
 }
 
 let S={
-  weeks:[JSON.parse(JSON.stringify(SEED)),JSON.parse(JSON.stringify(WEEK2))],
-  tab:'dashboard',sel:2,copied:false,
+  weeks:[JSON.parse(JSON.stringify(SEED)),JSON.parse(JSON.stringify(WEEK2)),JSON.parse(JSON.stringify(WEEK3))],
+  tab:'dashboard',sel:3,copied:false,
   draft:emptyWeek(),
   skf:false,nk:{icon:'📋',baslik:'',aciklama:'',durum:'devam'},
   ekfOpen:false,enk:{icon:'📋',baslik:'',aciklama:'',durum:'devam'},
